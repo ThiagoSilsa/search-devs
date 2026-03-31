@@ -5,6 +5,9 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import routes from './routes/routes.jsx'
 
+// Fonts
+import './assets/fonts.css'
+
 const router = createBrowserRouter(routes)
 
 createRoot(document.getElementById('root')).render(
