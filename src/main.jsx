@@ -4,14 +4,20 @@ import { createRoot } from 'react-dom/client'
 // Router
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import routes from './routes/routes.jsx'
+const router = createBrowserRouter(routes)
+
+// Chackra
+import { Provider } from './components/ui/provider.jsx'
+
 
 // Fonts
 import './assets/fonts.css'
 
-const router = createBrowserRouter(routes)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 )
