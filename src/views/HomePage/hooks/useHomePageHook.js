@@ -4,7 +4,7 @@ import GitHubController from "../../../controller/GitHubController"
 export const useHomePageHook = (
     searchTerm,
     setUsers,
-    setErrorMessage
+    setErrorMessage,
 ) => {
     const handleSearch = async (
         
@@ -20,7 +20,11 @@ export const useHomePageHook = (
         try {
             const users = await GitHubController.getUsers(query)
             setUsers(users)
-            setErrorMessage('')
+            if (users.length === 0) {
+                setErrorMessage('No results found')
+            } else {
+                setErrorMessage('')
+            }
         } catch (error) {
             setErrorMessage(error.message || 'Unexpected error while searching users')
         }
