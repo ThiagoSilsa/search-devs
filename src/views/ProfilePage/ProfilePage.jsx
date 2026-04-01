@@ -11,7 +11,6 @@ import {
     Flex,
     Heading,
     HStack,
-    Icon,
     Link,
     Spinner,
     Text,
@@ -35,6 +34,7 @@ const ProfilePage = () => {
     const [repositories, setRepositories] = useState([])
     const [loading, setLoading] = useState(true)
     const [errorMessage, setErrorMessage] = useState('')
+    const [isUserNotFound, setIsUserNotFound] = useState(false)
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -47,6 +47,7 @@ const ProfilePage = () => {
             try {
                 setLoading(true)
                 setErrorMessage('')
+                setIsUserNotFound(false)
 
                 const [profileData, repositoriesData] = await Promise.all([
                     GitHubController.getUserProfile(username),
@@ -56,6 +57,9 @@ const ProfilePage = () => {
                 setUser(profileData)
                 setRepositories(repositoriesData)
             } catch (error) {
+                if (error?.status === 404) {
+                    setIsUserNotFound(true)
+                }
                 setErrorMessage(error.message || 'Unexpected error while loading profile')
             } finally {
                 setLoading(false)
@@ -67,7 +71,7 @@ const ProfilePage = () => {
 
     if (loading) {
         return (
-            <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center">
+            <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center" bg="white">
                 <VStack gap={4}>
                     <Spinner size="xl" color="var(--primary-color)" />
                     <Text color="black">Loading profile...</Text>
@@ -75,12 +79,16 @@ const ProfilePage = () => {
             </Container>
         )
     }
-
     if (errorMessage || !user) {
         return (
-            <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center">
+            <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center" bg={"white"}>
                 <VStack gap={4}>
                     <Text color="red.500">{errorMessage || 'Could not load user profile'}</Text>
+                    {isUserNotFound && (
+                        <Text color="var(--font-color2)">
+                            The user "{username}" does not exist on GitHub.
+                        </Text>
+                    )}
                     <Button as={RouterLink} to="/" bg="var(--primary-color)" color="white" _hover={{ bg: 'var(--primary-color-hover)' }}>
                         Back
                     </Button>
@@ -96,9 +104,13 @@ const ProfilePage = () => {
                     as={RouterLink}
                     to="/"
                     alignSelf="flex-start"
-                    variant="outline"
                     borderColor="var(--border-color)"
                     color="black"
+                    _hover={{
+                        bg: 'var(--primary-color-hover)',
+                        transition: 'background-color 0.3s',
+                        color: 'white',
+                    }}
                 >
                     Back to search
                 </Button>
