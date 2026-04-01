@@ -9,6 +9,8 @@ const router = createBrowserRouter(routes)
 // Chackra
 import { Provider } from './components/ui/provider.jsx'
 
+// css
+import './global.css'
 
 // Fonts
 import './assets/fonts.css'
