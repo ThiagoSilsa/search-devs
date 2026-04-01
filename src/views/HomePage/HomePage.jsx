@@ -64,10 +64,9 @@ const HomePage = () => {
                             </InputGroup>
                             <Button
                                 onClick={handleSearch}
-                                size="lg"
+                                size="md"
                                 bg="var(--primary-color)"
                                 color={"white"}
-                                loadingText="Searching"
                                 _hover={{
                                     bg: 'var(--primary-color-hover)',
                                     transition: 'background-color 0.3s',
