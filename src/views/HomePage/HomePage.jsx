@@ -1,5 +1,8 @@
 import { useState } from 'react'
 
+// Router
+import { Link as RouterLink } from 'react-router-dom'
+
 // Chakra UI
 import { Container, VStack, Heading, HStack, Input, Button, Box, Text, InputGroup } from '@chakra-ui/react'
 
@@ -15,7 +18,7 @@ const HomePage = () => {
     const [errorMessage, setErrorMessage] = useState('')
 
     // Hooks
-    const { handleSearch, } = useHomePageHook(searchTerm, setUsers, setErrorMessage)
+    const { handleSearch } = useHomePageHook(searchTerm, setUsers, setErrorMessage)
 
     return (
         <Container bg={"white"} minW={"100vw"} minH={"100vh"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
@@ -72,9 +75,6 @@ const HomePage = () => {
 
                         <Box minH="20px">
                             {errorMessage && <Text color="red.500" fontSize="sm">{errorMessage}</Text>}
-                            {!errorMessage && users.length === 0 && (
-                                <Text color="red.500" fontSize="sm">No results found.</Text>
-                            )}
                         </Box>
 
                         {users.length > 0 && (
@@ -101,10 +101,8 @@ const HomePage = () => {
                                             <Text color="black" fontWeight="600">{user.login}</Text>
                                         </HStack>
                                         <Button
-                                            as="a"
-                                            href={user.html_url}
-                                            target="_blank"
-                                            rel="noreferrer"
+                                            as={RouterLink}
+                                            to={`/perfil/${user.login}`}
                                             size="sm"
                                             bg="var(--primary-color)"
                                             color="white"
