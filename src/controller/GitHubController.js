@@ -26,9 +26,9 @@ class GitHubController {
         return response.json()
     }
 
-    async getUserRepositories(username) {
+    async getUserRepositories(username, repoMaxCount = 10) {
         const response = await fetch(
-            `https://api.github.com/users/${encodeURIComponent(username)}/repos?sort=updated&per_page=10`
+            `https://api.github.com/users/${encodeURIComponent(username)}/repos?sort=updated&per_page=${repoMaxCount}`
         )
 
         if (!response.ok) {

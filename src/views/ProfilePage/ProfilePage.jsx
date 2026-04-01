@@ -11,6 +11,7 @@ import {
     Flex,
     Heading,
     HStack,
+    Icon,
     Link,
     Spinner,
     Text,
@@ -24,7 +25,7 @@ import GitHubController from '../../controller/GitHubController'
 import { HiOutlineUserGroup } from 'react-icons/hi'
 import { CiHeart, CiMail } from 'react-icons/ci'
 import { IoLocationOutline } from 'react-icons/io5'
-import { FiLink } from 'react-icons/fi'
+import { FiLink, FiMoreHorizontal } from 'react-icons/fi'
 
 const ProfilePage = () => {
     // Capture username from param
@@ -35,9 +36,14 @@ const ProfilePage = () => {
     const [loading, setLoading] = useState(true)
     const [errorMessage, setErrorMessage] = useState('')
     const [isUserNotFound, setIsUserNotFound] = useState(false)
+    const [repoMaxCount, setRepoMaxCount] = useState(10)
+    const [isLoadingMoreRepos, setIsLoadingMoreRepos] = useState(false)
 
+    const hasMoreRepositories = user ? repoMaxCount < user.public_repos : false
+
+    // Find user profile and initial repositories on component mount
     useEffect(() => {
-        const fetchProfileData = async () => {
+        const fetchInitialProfileData = async () => {
             if (!username) {
                 setErrorMessage('User not found')
                 setLoading(false)
@@ -48,10 +54,11 @@ const ProfilePage = () => {
                 setLoading(true)
                 setErrorMessage('')
                 setIsUserNotFound(false)
+                setRepoMaxCount(10)
 
                 const [profileData, repositoriesData] = await Promise.all([
                     GitHubController.getUserProfile(username),
-                    GitHubController.getUserRepositories(username),
+                    GitHubController.getUserRepositories(username, 10),
                 ])
 
                 setUser(profileData)
@@ -66,8 +73,55 @@ const ProfilePage = () => {
             }
         }
 
-        fetchProfileData()
+        fetchInitialProfileData()
     }, [username])
+
+    // Load more repositories when repoMaxCount changes (triggered by scroll)
+    useEffect(() => {
+        const fetchMoreRepositories = async () => {
+            if (!username || repoMaxCount <= 10 || !user) {
+                return
+            }
+
+            try {
+                setIsLoadingMoreRepos(true)
+                const repositoriesData = await GitHubController.getUserRepositories(username, repoMaxCount)
+                setRepositories(repositoriesData)
+            } catch (error) {
+                setErrorMessage(error.message || 'Unexpected error while loading repositories')
+            } finally {
+                setIsLoadingMoreRepos(false)
+            }
+        }
+
+        fetchMoreRepositories()
+    }, [username, repoMaxCount, user])
+
+    // Infinite scroll handler
+    useEffect(() => {
+        const handleScrollToBottom = () => {
+            if (!user || loading || isLoadingMoreRepos || !hasMoreRepositories) {
+                return
+            }
+
+            const scrollPosition = window.innerHeight + window.scrollY
+            const pageEnd = document.documentElement.scrollHeight
+            const reachedBottom = scrollPosition >= pageEnd - 48
+
+            if (reachedBottom) {
+                setRepoMaxCount((previousCount) => {
+                    const nextCount = previousCount + 10
+                    return Math.min(nextCount, user.public_repos)
+                })
+            }
+        }
+
+        window.addEventListener('scroll', handleScrollToBottom)
+
+        return () => {
+            window.removeEventListener('scroll', handleScrollToBottom)
+        }
+    }, [hasMoreRepositories, isLoadingMoreRepos, loading, user])
 
     if (loading) {
         return (
@@ -85,7 +139,7 @@ const ProfilePage = () => {
                 <VStack gap={4}>
                     <Text color="red.500">{errorMessage || 'Could not load user profile'}</Text>
                     {isUserNotFound && (
-                        <Text color="var(--font-color2)">
+                        <Text color="var(--font-color2)" whiteSpace="wrap" wordBreak="break-word">
                             The user "{username}" does not exist on GitHub.
                         </Text>
                     )}
@@ -98,7 +152,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <Container minW="100vw" minH="100vh" bg="white" py={10}>
+        <Container minW="99vw" minH="100vh" bg="white" py={10}>
             <VStack maxW="1200px" mx="auto" align="stretch" gap={6}>
                 <Button
                     as={RouterLink}
@@ -155,13 +209,13 @@ const ProfilePage = () => {
                                 </HStack>
                                 <HStack justify="space-between">
                                     <FiLink color={"var(--font-color2)"} size={20} />
-                                    <Text color="var(--font-color2)">
+                                    <Text color="var(--font-color2)" whiteSpace="wrap" wordBreak="break-word">
                                         {user?.blog || 'No public website'}
                                     </Text>
                                 </HStack>
                                 <HStack justify="space-between">
                                     <CiMail color={"var(--font-color2)"} size={20} />
-                                    <Text color="var(--font-color2)">
+                                    <Text color="var(--font-color2)" whiteSpace="wrap" wordBreak="break-word">
                                         {user?.email || 'No public email'}
                                     </Text>
                                 </HStack>
@@ -249,6 +303,17 @@ const ProfilePage = () => {
                                     </HStack>
                                 </Box>
                             ))}
+                        </VStack>
+
+                        <VStack mt={6}>
+                            {hasMoreRepositories && (
+                                <Icon as={FiMoreHorizontal} boxSize={7} color="var(--font-color2)" />
+                            )}
+                            {!hasMoreRepositories && repositories.length > 0 && (
+                                <Text color="var(--font-color2)" fontSize="sm">
+                                    No more repositories to load.
+                                </Text>
+                            )}
                         </VStack>
                     </Box>
                 </Flex>
