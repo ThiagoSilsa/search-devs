@@ -46,6 +46,11 @@ const HomePage = () => {
                                     size="lg"
                                     borderColor="var(--border-color)"
                                     value={searchTerm}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleSearch()
+                                        }
+                                    }}
                                     onChange={(e) => {
                                         setSearchTerm(e.target.value)
                                         if (errorMessage) setErrorMessage('')
