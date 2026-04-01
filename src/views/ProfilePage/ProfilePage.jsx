@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+
+// Router
 import { Link as RouterLink, useParams } from 'react-router-dom'
 
 // Chakra UI
@@ -9,15 +11,21 @@ import {
     Flex,
     Heading,
     HStack,
+    Icon,
     Link,
     Spinner,
-    Stack,
     Text,
     VStack,
 } from '@chakra-ui/react'
 
 // Controller
 import GitHubController from '../../controller/GitHubController'
+
+// Icons
+import { HiOutlineUserGroup } from 'react-icons/hi'
+import { CiHeart, CiMail } from 'react-icons/ci'
+import { IoLocationOutline } from 'react-icons/io5'
+import { FiLink } from 'react-icons/fi'
 
 const ProfilePage = () => {
     // Capture username from param
@@ -95,7 +103,7 @@ const ProfilePage = () => {
                     Back to search
                 </Button>
 
-                <Flex direction={{ base: 'column', md: 'row' }} align="flex-start" gap={8}>
+                <Flex direction={{ base: 'column', md: 'row' }} align="flex-start" gap={8} >
                     <Box
                         w={{ base: 'full', md: '320px' }}
                         border="1px solid var(--border-color)"
@@ -104,39 +112,94 @@ const ProfilePage = () => {
                         position={{ base: 'static', md: 'sticky' }}
                         top={6}
                     >
-                        <VStack align="stretch" gap={4}>
-                            <Box as="img" src={user.avatar_url} alt={user.login} borderRadius="full" w="120px" h="120px" mx="auto" />
-                            <VStack align="stretch" gap={1}>
-                                <Heading as="h1" size="md" color="black">
-                                    {user.name || user.login}
-                                </Heading>
-                                <Text color="gray.600">@{user.login}</Text>
-                            </VStack>
-
-                            {user.bio && <Text color="gray.700">{user.bio}</Text>}
-
-                            <Stack direction="row" gap={6}>
-                                <VStack align="flex-start" gap={0}>
-                                    <Text fontSize="lg" fontWeight="700" color="black">
-                                        {user.followers}
-                                    </Text>
-                                    <Text color="gray.600">Followers</Text>
+                        <VStack align="stretch" gap={4} >
+                            <HStack align="center">
+                                <Box as="img" src={user.avatar_url} alt={user.login} borderRadius="full" w="55px" />
+                                <VStack gap={1} align={"flex-start"}>
+                                    <Heading as="h1" size="md" color="var(--font-color1)">
+                                        {user.name || user.login}
+                                    </Heading>
+                                    <Text fontSize={"sm"} color="var(--font-color3)">@{user.login}</Text>
                                 </VStack>
-                                <VStack align="flex-start" gap={0}>
-                                    <Text fontSize="lg" fontWeight="700" color="black">
-                                        {user.following}
-                                    </Text>
-                                    <Text color="gray.600">Following</Text>
-                                </VStack>
-                            </Stack>
-
-                            <HStack justify="space-between">
-                                <Text color="gray.600">Public repos</Text>
-                                <Text color="black" fontWeight="700">
-                                    {user.public_repos}
-                                </Text>
                             </HStack>
+                            {user.bio && <Text color="var(--font-color2)">{user.bio}</Text>}
+
+                            <VStack align="flex-start" gap={0}>
+                                <HStack justify="space-between">
+                                    <HiOutlineUserGroup color={"var(--font-color2)"} size={20} />
+                                    <Text color="var(--font-color2)">
+                                        {user?.followers || '0'} Followers</Text>
+                                </HStack>
+                                <HStack justify="space-between">
+                                    <CiHeart color={"var(--font-color2)"} size={20} />
+                                    <Text color="var(--font-color2)">
+                                        {user?.following || '0'} Following</Text>
+                                </HStack>
+                                <HStack justify="space-between">
+                                    <IoLocationOutline color={"var(--font-color2)"} size={20} />
+                                    <Text color="var(--font-color2)">
+                                        {user?.location || 'No public location'}
+                                    </Text>
+                                </HStack>
+                                <HStack justify="space-between">
+                                    <FiLink color={"var(--font-color2)"} size={20} />
+                                    <Text color="var(--font-color2)">
+                                        {user?.blog || 'No public website'}
+                                    </Text>
+                                </HStack>
+                                <HStack justify="space-between">
+                                    <CiMail color={"var(--font-color2)"} size={20} />
+                                    <Text color="var(--font-color2)">
+                                        {user?.email || 'No public email'}
+                                    </Text>
+                                </HStack>
+                            </VStack>
                         </VStack>
+                        <VStack marginTop={10}>
+                            {
+                                user?.blog && (
+                                    <Button
+                                        as="a"
+                                        href={user?.blog}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        size="md"
+                                        bg="var(--primary-color)"
+                                        color={"white"}
+                                        _hover={{
+                                            bg: 'var(--primary-color-hover)',
+                                            transition: 'background-color 0.3s',
+                                        }}
+                                        padding={"2px 55px"}
+                                        w={"full"}
+
+                                    >
+                                        Contact
+                                    </Button>
+                                )
+                            }
+                            {
+                                user?.twitter_username && (
+                                    <Button
+                                        as="a"
+                                        href={`https://x.com/${user?.twitter_username}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        size="md"
+                                        bg="var(--primary-color)"
+                                        color={"white"}
+                                        _hover={{
+                                            bg: 'var(--primary-color-hover)',
+                                            transition: 'background-color 0.3s',
+                                        }}
+                                        padding={"2px 55px"}
+                                        w={"full"}
+                                    >
+                                        Twitter
+                                    </Button>)
+                            }
+                        </VStack>
+
                     </Box>
 
                     <Box flex="1" w="full">
@@ -163,12 +226,12 @@ const ProfilePage = () => {
                                                 {repository.name}
                                             </Link>
                                             {repository.description && (
-                                                <Text color="gray.600" fontSize="sm">
+                                                <Text color="var(--font-color2)" fontSize="sm">
                                                     {repository.description}
                                                 </Text>
                                             )}
                                         </VStack>
-                                        <Text color="gray.500" fontSize="sm" whiteSpace="nowrap">
+                                        <Text color="var(--font-color2)" fontSize="sm" whiteSpace="nowrap">
                                             {repository.language || 'No language'}
                                         </Text>
                                     </HStack>
