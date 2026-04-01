@@ -107,7 +107,7 @@ const HomePage = () => {
                                         </HStack>
                                         <Button
                                             as={RouterLink}
-                                            to={`/perfil/${user.login}`}
+                                            to={`/profile/${user.login}`}
                                             size="sm"
                                             bg="var(--primary-color)"
                                             color="white"
