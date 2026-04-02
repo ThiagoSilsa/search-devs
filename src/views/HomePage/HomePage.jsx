@@ -27,7 +27,7 @@ const HomePage = () => {
     return (
         <Container
             bg={"white"}
-            minW={"100vw"}
+            minW={"98.5vw"}
             minH={"100vh"}
             pt={{ base: 20, md: 0 }}
             display={"flex"}
