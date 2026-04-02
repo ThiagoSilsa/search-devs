@@ -1,5 +1,8 @@
 import api from './BaseController'
 
+// Schemas
+import userProfileSchema from '../schemas/userProfileSchema'
+
 class GitHubController {
     createApiError(errorResponse) {
         const status = errorResponse?.status || 500
@@ -29,8 +32,14 @@ class GitHubController {
     async getUserProfile(username) {
         try {
             const response = await api.get(`/users/${encodeURIComponent(username)}`)
-            return response.data
+
+            const parsedProfile = userProfileSchema.safeParse(response.data)
+
+            return parsedProfile.data
         } catch (error) {
+            if (error instanceof Error && error.message === 'Invalid GitHub profile response') {
+                throw error
+            }
             throw this.createApiError(error.response)
         }
     }
