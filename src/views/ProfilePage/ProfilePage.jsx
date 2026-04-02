@@ -159,7 +159,7 @@ const ProfilePage = () => {
             <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center" bg="white">
                 <VStack gap={4}>
                     <Spinner size="xl" color="var(--primary-color)" />
-                    <Text color="black">{t('profilePage.loading.profile')}</Text>
+                    <Text color="var(--font-color1)">{t('profilePage.loading.profile')}</Text>
                 </VStack>
             </Container>
         )
@@ -190,7 +190,7 @@ const ProfilePage = () => {
                     to="/"
                     alignSelf="flex-start"
                     borderColor="var(--border-color)"
-                    color="black"
+                    color="var(--font-color1)"
                     _hover={{
                         bg: 'var(--primary-color-hover)',
                         transition: 'background-color 0.3s',
@@ -312,7 +312,7 @@ const ProfilePage = () => {
 
                     <Box flex="1" w="full">
                         <Flex direction={{ base: 'column', md: 'row' }} gap={2} justify={"space-between"}>
-                            <Heading as="h2" size="lg" color="black" mb={4}>
+                            <Heading as="h2" size="lg" color="var(--font-color1)" mb={4}>
                                 {t('profilePage.title')}
                             </Heading>
                             <HStack spacing={3}>
@@ -351,7 +351,7 @@ const ProfilePage = () => {
 
 
                         {repositories.length === 0 && (
-                            <Text color="gray.600">{t('profilePage.states.noRepositories')}</Text>
+                            <Text color="var(--font-color2)">{t('profilePage.states.noRepositories')}</Text>
                         )}
 
                         <VStack align="stretch" gap={3}>

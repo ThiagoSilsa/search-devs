@@ -87,7 +87,7 @@ const HomePage = () => {
                                         borderColor: 'var(--primary-color)',
                                         boxShadow: '0 0 0 1px var(--primary-color)'
                                     }}
-                                    color={"black"}
+                                    color={"var(--font-color1)"}
                                 />
                             </InputGroup>
                             <Button
@@ -114,7 +114,7 @@ const HomePage = () => {
                             isLoading ? (
                                 <VStack gap={4}>
                                     <Spinner size="xl" color="var(--primary-color)" />
-                                    <Text color="black">{t('profilePage.loading.profile')}</Text>
+                                    <Text color="var(--font-color1)">{t('profilePage.loading.profile')}</Text>
                                 </VStack>
                             )
                                 : (
@@ -142,7 +142,7 @@ const HomePage = () => {
                                                             h="40px"
                                                             borderRadius="full"
                                                         />
-                                                        <Text color="black" fontWeight="600"
+                                                        <Text color="var(--font-color1)" fontWeight="600"
 
                                                         >{user.login}</Text>
                                                     </HStack>
