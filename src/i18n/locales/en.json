@@ -1,0 +1,70 @@
+{
+    "common": {
+        "search": "Search",
+        "view": "View",
+        "back": "Back",
+        "backToSearch": "Back to search",
+        "contact": "Contact",
+        "twitter": "Twitter",
+        "language": "Language",
+        "portuguese": "Portuguese",
+        "english": "English"
+    },
+    "homePage": {
+        "searchPlaceholder": "Search",
+        "errors": {
+            "emptySearch": "Type a username to search",
+            "noResults": "No results found",
+            "unexpected": "Unexpected error while searching users"
+        }
+    },
+    "profilePage": {
+        "title": "Repositories",
+        "errors": {
+            "userNotFound": "User not found",
+            "profileLoad": "Unexpected error while loading profile",
+            "repositoriesLoad": "Unexpected error while loading repositories",
+            "profileFallback": "Could not load user profile",
+            "userDoesNotExist": "The user \"{{username}}\" does not exist on GitHub."
+        },
+        "loading": {
+            "profile": "Loading profile...",
+            "repositories": "Loading repositories..."
+        },
+        "stats": {
+            "followers": "{{count}} Followers",
+            "following": "{{count}} Following"
+        },
+        "fallback": {
+            "company": "No public company",
+            "location": "No public location",
+            "website": "No public website",
+            "email": "No public email",
+            "language": "No language",
+            "noUpdateDate": "No update date"
+        },
+        "sort": {
+            "updated": "Updated",
+            "created": "Created",
+            "pushed": "Pushed",
+            "fullName": "Full Name",
+            "asc": "ASC",
+            "desc": "DESC"
+        },
+        "states": {
+            "noRepositories": "This user has no public repositories.",
+            "noMoreRepositories": "No more repositories to load."
+        },
+        "updatedWithDate": "updated {{value}}"
+    },
+    "dateUtils": {
+        "invalidDate": "Invalid date",
+        "today": "today",
+        "yesterday": "yesterday",
+        "daysAgo": "{{count}} days ago",
+        "monthAgo": "1 month ago",
+        "monthsAgo": "{{count}} months ago",
+        "yearAgo": "1 year ago",
+        "yearsAgo": "{{count}} years ago"
+    }
+}

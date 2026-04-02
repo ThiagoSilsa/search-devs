@@ -5,15 +5,16 @@ export const useHomePageHook = (
     searchTerm,
     setUsers,
     setErrorMessage,
+    t,
 ) => {
     const handleSearch = async (
-        
+
     ) => {
         const query = searchTerm.trim()
 
         if (!query) {
             setUsers([])
-            setErrorMessage('Type a username to search')
+            setErrorMessage(t('homePage.errors.emptySearch'))
             return
         }
 
@@ -21,12 +22,12 @@ export const useHomePageHook = (
             const users = await GitHubController.getUsers(query)
             setUsers(users)
             if (users.length === 0) {
-                setErrorMessage('No results found')
+                setErrorMessage(t('homePage.errors.noResults'))
             } else {
                 setErrorMessage('')
             }
         } catch (error) {
-            setErrorMessage(error.message || 'Unexpected error while searching users')
+            setErrorMessage(error.message || t('homePage.errors.unexpected'))
         }
     }
 

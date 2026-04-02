@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // Router
 import { Link as RouterLink, useParams } from 'react-router-dom'
@@ -35,6 +36,8 @@ import { BsBuilding } from 'react-icons/bs'
 
 
 const ProfilePage = () => {
+    const { t, i18n } = useTranslation()
+
     // Capture username from param
     const { username } = useParams()
 
@@ -56,7 +59,7 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchInitialProfileData = async () => {
             if (!username) {
-                setErrorMessage('User not found')
+                setErrorMessage(t('profilePage.errors.userNotFound'))
                 setLoadingUser(false)
                 return
             }
@@ -74,14 +77,14 @@ const ProfilePage = () => {
                 if (error?.status === 404) {
                     setIsUserNotFound(true)
                 }
-                setErrorMessage(error.message || 'Unexpected error while loading profile')
+                setErrorMessage(error.message || t('profilePage.errors.profileLoad'))
             } finally {
                 setLoadingUser(false)
             }
         }
 
         fetchInitialProfileData()
-    }, [username])
+    }, [username, t])
 
     // Busca pelos repositorios do usuário
     useEffect(() => {
@@ -96,13 +99,13 @@ const ProfilePage = () => {
 
                 setRepositories(repositoriesData)
             } catch (error) {
-                setErrorMessage(error.message || 'Unexpected error while loading repositories')
+                setErrorMessage(error.message || t('profilePage.errors.repositoriesLoad'))
             } finally {
                 setLoadingRepos(false)
             }
         }
         fetchInitialProfileData()
-    }, [username, sortType, sortDirection])
+    }, [username, sortType, sortDirection, t])
 
     // Load more repositories when repoMaxCount changes (triggered by scroll)
     useEffect(() => {
@@ -116,14 +119,14 @@ const ProfilePage = () => {
                 const repositoriesData = await GitHubController.getUserRepositories(username, repoMaxCount, sortType, sortDirection)
                 setRepositories(repositoriesData)
             } catch (error) {
-                setErrorMessage(error.message || 'Unexpected error while loading repositories')
+                setErrorMessage(error.message || t('profilePage.errors.repositoriesLoad'))
             } finally {
                 setIsLoadingMoreRepos(false)
             }
         }
 
         fetchMoreRepositories()
-    }, [username, repoMaxCount, user, sortType, sortDirection])
+    }, [username, repoMaxCount, user, sortType, sortDirection, t])
 
     // Infinite scroll handler
     useEffect(() => {
@@ -156,7 +159,7 @@ const ProfilePage = () => {
             <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center" bg="white">
                 <VStack gap={4}>
                     <Spinner size="xl" color="var(--primary-color)" />
-                    <Text color="black">Loading profile...</Text>
+                    <Text color="black">{t('profilePage.loading.profile')}</Text>
                 </VStack>
             </Container>
         )
@@ -165,14 +168,14 @@ const ProfilePage = () => {
         return (
             <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center" bg={"white"}>
                 <VStack gap={4}>
-                    <Text color="red.500">{errorMessage || 'Could not load user profile'}</Text>
+                    <Text color="red.500">{errorMessage || t('profilePage.errors.profileFallback')}</Text>
                     {isUserNotFound && (
                         <Text color="var(--font-color2)" whiteSpace="wrap" wordBreak="break-word">
-                            The user "{username}" does not exist on GitHub.
+                            {t('profilePage.errors.userDoesNotExist', { username })}
                         </Text>
                     )}
                     <Button as={RouterLink} to="/" bg="var(--primary-color)" color="white" _hover={{ bg: 'var(--primary-color-hover)' }}>
-                        Back
+                        {t('common.back')}
                     </Button>
                 </VStack>
             </Container>
@@ -182,6 +185,24 @@ const ProfilePage = () => {
     return (
         <Container minW="99vw" minH="100vh" bg="white" py={10}>
             <VStack maxW="1200px" mx="auto" align="stretch" gap={6}>
+                <HStack w="full" justify="flex-end">
+                    <Text color="var(--font-color2)" fontSize="sm">
+                        {t('common.language')}
+                    </Text>
+                    <NativeSelect.Root
+                        value={i18n.language.startsWith('pt') ? 'pt' : 'en'}
+                        onChange={(e) => i18n.changeLanguage(e.target.value)}
+                        w="140px"
+                        bg="white"
+                        color="var(--font-color2)"
+                    >
+                        <NativeSelect.Field>
+                            <option value="en">{t('common.english')}</option>
+                            <option value="pt">{t('common.portuguese')}</option>
+                        </NativeSelect.Field>
+                        <NativeSelect.Indicator />
+                    </NativeSelect.Root>
+                </HStack>
 
                 <Button
                     as={RouterLink}
@@ -195,7 +216,7 @@ const ProfilePage = () => {
                         color: 'white',
                     }}
                 >
-                    Back to search
+                    {t('common.backToSearch')}
                 </Button>
 
                 <Flex direction={{ base: 'column', md: 'row' }} align="flex-start" gap={8} >
@@ -223,12 +244,14 @@ const ProfilePage = () => {
                                 <HStack justify="space-between">
                                     <HiOutlineUserGroup color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)">
-                                        {user?.followers || '0'} Followers</Text>
+                                        {t('profilePage.stats.followers', { count: user?.followers || 0 })}
+                                    </Text>
                                 </HStack>
                                 <HStack justify="space-between">
                                     <CiHeart color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)">
-                                        {user?.following || '0'} Following</Text>
+                                        {t('profilePage.stats.following', { count: user?.following || 0 })}
+                                    </Text>
                                 </HStack>
 
                             </VStack>
@@ -236,25 +259,25 @@ const ProfilePage = () => {
                                 <HStack justify="space-between">
                                     <BsBuilding color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)">
-                                        {user?.company || 'No public company'}
+                                        {user?.company || t('profilePage.fallback.company')}
                                     </Text>
                                 </HStack>
                                 <HStack justify="space-between">
                                     <IoLocationOutline color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)">
-                                        {user?.location || 'No public location'}
+                                        {user?.location || t('profilePage.fallback.location')}
                                     </Text>
                                 </HStack>
                                 <HStack justify="space-between">
                                     <FiLink color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)" whiteSpace="wrap" wordBreak="break-word">
-                                        {user?.blog || 'No public website'}
+                                        {user?.blog || t('profilePage.fallback.website')}
                                     </Text>
                                 </HStack>
                                 <HStack justify="space-between">
                                     <CiMail color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)" whiteSpace="wrap" wordBreak="break-word">
-                                        {user?.email || 'No public email'}
+                                        {user?.email || t('profilePage.fallback.email')}
                                     </Text>
                                 </HStack>
                             </VStack>
@@ -278,7 +301,7 @@ const ProfilePage = () => {
                                         w={"full"}
 
                                     >
-                                        Contact
+                                        {t('common.contact')}
                                     </Button>
                                 )
                             }
@@ -299,7 +322,7 @@ const ProfilePage = () => {
                                         padding={"2px 55px"}
                                         w={"full"}
                                     >
-                                        Twitter
+                                        {t('common.twitter')}
                                     </Button>)
                             }
                         </VStack>
@@ -309,7 +332,7 @@ const ProfilePage = () => {
                     <Box flex="1" w="full">
                         <HStack justify="space-between" align="center" mb={4}>
                             <Heading as="h2" size="lg" color="black" mb={4}>
-                                Repositories
+                                {t('profilePage.title')}
                             </Heading>
                             <HStack spacing={3}>
                                 <NativeSelect.Root
@@ -321,10 +344,10 @@ const ProfilePage = () => {
                                 >
                                     <NativeSelect.Field
                                     >
-                                        <option value="updated">Updated</option>
-                                        <option value="created">Created</option>
-                                        <option value="pushed">Pushed</option>
-                                        <option value="full_name">Full Name</option>
+                                        <option value="updated">{t('profilePage.sort.updated')}</option>
+                                        <option value="created">{t('profilePage.sort.created')}</option>
+                                        <option value="pushed">{t('profilePage.sort.pushed')}</option>
+                                        <option value="full_name">{t('profilePage.sort.fullName')}</option>
                                     </NativeSelect.Field>
                                     <NativeSelect.Indicator />
                                 </NativeSelect.Root>
@@ -337,8 +360,8 @@ const ProfilePage = () => {
                                 >
                                     <NativeSelect.Field
                                     >
-                                        <option value="asc">ASC</option>
-                                        <option value="desc">DESC</option>
+                                        <option value="asc">{t('profilePage.sort.asc')}</option>
+                                        <option value="desc">{t('profilePage.sort.desc')}</option>
                                     </NativeSelect.Field>
                                     <NativeSelect.Indicator />
                                 </NativeSelect.Root>
@@ -347,7 +370,7 @@ const ProfilePage = () => {
 
 
                         {repositories.length === 0 && (
-                            <Text color="gray.600">This user has no public repositories.</Text>
+                            <Text color="gray.600">{t('profilePage.states.noRepositories')}</Text>
                         )}
 
                         <VStack align="stretch" gap={3}>
@@ -355,7 +378,7 @@ const ProfilePage = () => {
                                 loadingRepos ? (
                                     <HStack justify="center" py={6}>
                                         <Spinner size="lg" color="var(--primary-color)" />
-                                        <Text color="var(--font-color2)">Loading repositories...</Text>
+                                        <Text color="var(--font-color2)">{t('profilePage.loading.repositories')}</Text>
                                     </HStack>
                                 )
                                     :
@@ -380,7 +403,7 @@ const ProfilePage = () => {
                                                         )}
                                                     </VStack>
                                                     <Text color="var(--font-color2)" fontSize="sm" whiteSpace="nowrap">
-                                                        {repository.language || 'No language'}
+                                                        {repository.language || t('profilePage.fallback.language')}
                                                     </Text>
                                                 </HStack>
                                                 <HStack mt={2} spacing={4}>
@@ -399,7 +422,9 @@ const ProfilePage = () => {
                                                     <HStack spacing={1}>
                                                         <LuDot color={"var(--font-color2)"} size={16} />
                                                         <Text color="var(--font-color2)" fontSize="sm">
-                                                            {repository.updated_at ? "updated " + getDayQuantityText(repository.updated_at) : 'No update date'}
+                                                            {repository.updated_at
+                                                                ? t('profilePage.updatedWithDate', { value: getDayQuantityText(repository.updated_at) })
+                                                                : t('profilePage.fallback.noUpdateDate')}
                                                         </Text>
                                                     </HStack>
                                                 </HStack>
@@ -416,7 +441,7 @@ const ProfilePage = () => {
                             )}
                             {!hasMoreRepositories && repositories.length > 0 && (
                                 <Text color="var(--font-color2)" fontSize="sm">
-                                    No more repositories to load.
+                                    {t('profilePage.states.noMoreRepositories')}
                                 </Text>
                             )}
                         </VStack>

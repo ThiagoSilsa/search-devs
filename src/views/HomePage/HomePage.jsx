@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // Router
 import { Link as RouterLink } from 'react-router-dom'
 
 // Chakra UI
-import { Container, VStack, Heading, HStack, Input, Button, Box, Text, InputGroup } from '@chakra-ui/react'
+import { Container, VStack, HStack, Input, Button, Box, Text, InputGroup, NativeSelect } from '@chakra-ui/react'
 
 // Icons
 import { FiSearch } from 'react-icons/fi'
@@ -16,16 +17,46 @@ import { useHomePageHook } from './hooks/useHomePageHook'
 import Logo from '../../components/created/Logo'
 
 const HomePage = () => {
+    const { t, i18n } = useTranslation()
+
     const [searchTerm, setSearchTerm] = useState('')
     const [users, setUsers] = useState([])
     const [errorMessage, setErrorMessage] = useState('')
 
     // Hooks
-    const { handleSearch } = useHomePageHook(searchTerm, setUsers, setErrorMessage)
+    const { handleSearch } = useHomePageHook(searchTerm, setUsers, setErrorMessage, t)
 
     return (
-        <Container bg={"white"} minW={"100vw"} minH={"100vh"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+        <Container
+            bg={"white"}
+            minW={"100vw"}
+            minH={"100vh"}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            position="relative"
+        >
+            <HStack position="absolute" top={4} right={4} spacing={2}>
+                <Text color="var(--font-color2)" fontSize="sm">
+                    {t('common.language')}
+                </Text>
+                <NativeSelect.Root
+                    value={i18n.language.startsWith('pt') ? 'pt' : 'en'}
+                    onChange={(e) => i18n.changeLanguage(e.target.value)}
+                    w="140px"
+                    bg="white"
+                    color="var(--font-color2)"
+                >
+                    <NativeSelect.Field>
+                        <option value="en">{t('common.english')}</option>
+                        <option value="pt">{t('common.portuguese')}</option>
+                    </NativeSelect.Field>
+                    <NativeSelect.Indicator />
+                </NativeSelect.Root>
+            </HStack>
             <VStack spacing={8} align="center" maxW={"60vw"} w={"full"}>
+
+
                 <Logo size="lg"
                 />
 
@@ -35,7 +66,7 @@ const HomePage = () => {
                             <InputGroup startElement={<FiSearch size={22} />}>
                                 <Input
                                     required={true}
-                                    placeholder="Search"
+                                    placeholder={t('homePage.searchPlaceholder')}
                                     size="lg"
                                     borderColor="var(--border-color)"
                                     value={searchTerm}
@@ -66,7 +97,7 @@ const HomePage = () => {
                                 }}
                                 padding={"2px 55px"}
                             >
-                                Search
+                                {t('common.search')}
                             </Button>
                         </HStack>
 
@@ -105,7 +136,7 @@ const HomePage = () => {
                                             color="white"
                                             _hover={{ bg: 'var(--primary-color-hover)' }}
                                         >
-                                            View
+                                            {t('common.view')}
                                         </Button>
                                     </Box>
                                 ))}
