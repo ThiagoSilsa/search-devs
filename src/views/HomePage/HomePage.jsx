@@ -12,6 +12,9 @@ import { FiSearch } from 'react-icons/fi'
 // Controller
 import { useHomePageHook } from './hooks/useHomePageHook'
 
+// Components
+import Logo from '../../components/created/Logo'
+
 const HomePage = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [users, setUsers] = useState([])
@@ -23,18 +26,8 @@ const HomePage = () => {
     return (
         <Container bg={"white"} minW={"100vw"} minH={"100vh"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
             <VStack spacing={8} align="center" maxW={"60vw"} w={"full"}>
-                <Heading
-                    as="h1"
-                    fontSize="70px"
-                    size={"7xl"}
-                    textAlign="center"
-                    fontFamily="'Nunito', sans-serif"
-                    fontWeight={"400"}
-                    marginBottom={"20px"}
-                >
-                    <Text as="span" color="var(--secondary-color)">Search </Text>
-                    <Text as="span" color="var(--primary-color)">d_evs</Text>
-                </Heading>
+                <Logo size="lg"
+                />
 
                 <Box w="full" maxW="600px">
                     <VStack spacing={1} align="stretch">
