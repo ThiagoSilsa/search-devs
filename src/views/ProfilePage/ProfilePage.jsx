@@ -13,6 +13,7 @@ import {
     HStack,
     Icon,
     Link,
+    NativeSelect,
     Spinner,
     Text,
     VStack,
@@ -45,8 +46,11 @@ const ProfilePage = () => {
     const [isUserNotFound, setIsUserNotFound] = useState(false)
     const [repoMaxCount, setRepoMaxCount] = useState(10)
     const [isLoadingMoreRepos, setIsLoadingMoreRepos] = useState(false)
+    const [sortType, setSortType] = useState('updated')
+    const [sortDirection, setSortDirection] = useState('desc')
 
     const hasMoreRepositories = user ? repoMaxCount < user.public_repos : false
+
 
     // Find user profile and initial repositories on component mount
     useEffect(() => {
@@ -87,7 +91,7 @@ const ProfilePage = () => {
                 setErrorMessage('')
 
                 const [repositoriesData] = await Promise.all([
-                    GitHubController.getUserRepositories(username, 10),
+                    GitHubController.getUserRepositories(username, 10, sortType, sortDirection),
                 ])
 
                 setRepositories(repositoriesData)
@@ -98,7 +102,7 @@ const ProfilePage = () => {
             }
         }
         fetchInitialProfileData()
-    }, [username])
+    }, [username, sortType, sortDirection])
 
     // Load more repositories when repoMaxCount changes (triggered by scroll)
     useEffect(() => {
@@ -109,7 +113,7 @@ const ProfilePage = () => {
 
             try {
                 setIsLoadingMoreRepos(true)
-                const repositoriesData = await GitHubController.getUserRepositories(username, repoMaxCount)
+                const repositoriesData = await GitHubController.getUserRepositories(username, repoMaxCount, sortType, sortDirection)
                 setRepositories(repositoriesData)
             } catch (error) {
                 setErrorMessage(error.message || 'Unexpected error while loading repositories')
@@ -119,7 +123,7 @@ const ProfilePage = () => {
         }
 
         fetchMoreRepositories()
-    }, [username, repoMaxCount, user])
+    }, [username, repoMaxCount, user, sortType, sortDirection])
 
     // Infinite scroll handler
     useEffect(() => {
@@ -306,7 +310,40 @@ const ProfilePage = () => {
                             <Heading as="h2" size="lg" color="black" mb={4}>
                                 Repositories
                             </Heading>
-                            !AQUI
+                            <HStack spacing={3}>
+                                <NativeSelect.Root
+                                    value={sortType}
+                                    onChange={(e) => setSortType(e.target.value)}
+                                    w="150px"
+                                    bg="white"
+                                    color={"var(--primary-color)"}
+                                >
+                                    <NativeSelect.Field
+                                        placeholder='Sort by'
+                                    >
+                                        <option value="created">Created</option>
+                                        <option value="updated">Updated</option>
+                                        <option value="pushed">Pushed</option>
+                                        <option value="full_name">Full Name</option>
+                                    </NativeSelect.Field>
+                                    <NativeSelect.Indicator />
+                                </NativeSelect.Root>
+                                <NativeSelect.Root
+                                    value={sortDirection}
+                                    onChange={(e) => setSortDirection(e.target.value)}
+                                    w="120px"
+                                    bg="white"
+                                    color={"var(--primary-color)"}
+                                >
+                                    <NativeSelect.Field
+                                        placeholder='Direction'
+                                    >
+                                        <option value="asc">ASC</option>
+                                        <option value="desc">DESC</option>
+                                    </NativeSelect.Field>
+                                    <NativeSelect.Indicator />
+                                </NativeSelect.Root>
+                            </HStack>
                         </HStack>
 
 
