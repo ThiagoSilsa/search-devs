@@ -5,6 +5,7 @@ export const useHomePageHook = (
     searchTerm,
     setUsers,
     setErrorMessage,
+    setIsLoading,
     t,
 ) => {
     const handleSearch = async (
@@ -19,6 +20,7 @@ export const useHomePageHook = (
         }
 
         try {
+            setIsLoading(true)
             const users = await GitHubController.getUsers(query)
             setUsers(users)
             if (users.length === 0) {
@@ -28,6 +30,9 @@ export const useHomePageHook = (
             }
         } catch (error) {
             setErrorMessage(error.message || t('homePage.errors.unexpected'))
+        }
+        finally {
+            setIsLoading(false)
         }
     }
 

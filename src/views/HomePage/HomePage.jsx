@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router-dom'
 
 // Chakra UI
-import { Container, VStack, HStack, Input, Button, Box, Text, InputGroup, NativeSelect } from '@chakra-ui/react'
+import { Container, VStack, HStack, Input, Button, Box, Text, InputGroup, NativeSelect, Spinner } from '@chakra-ui/react'
 
 // Icons
 import { FiSearch } from 'react-icons/fi'
@@ -22,9 +22,10 @@ const HomePage = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [users, setUsers] = useState([])
     const [errorMessage, setErrorMessage] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
     // Hooks
-    const { handleSearch } = useHomePageHook(searchTerm, setUsers, setErrorMessage, t)
+    const { handleSearch } = useHomePageHook(searchTerm, setUsers, setErrorMessage, setIsLoading, t)
 
     return (
         <Container
@@ -105,43 +106,54 @@ const HomePage = () => {
                             {errorMessage && <Text color="red.500" fontSize="sm">{errorMessage}</Text>}
                         </Box>
 
-                        {users.length > 0 && (
-                            <VStack align="stretch" spacing={3} mt={2}>
-                                {users.map((user) => (
-                                    <Box
-                                        key={user.id}
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="space-between"
-                                        border="1px solid var(--border-color)"
-                                        borderRadius="md"
-                                        p={3}
-                                    >
-                                        <HStack spacing={3}>
-                                            <Box
-                                                as="img"
-                                                src={user.avatar_url}
-                                                alt={user.login}
-                                                w="40px"
-                                                h="40px"
-                                                borderRadius="full"
-                                            />
-                                            <Text color="black" fontWeight="600">{user.login}</Text>
-                                        </HStack>
-                                        <Button
-                                            as={RouterLink}
-                                            to={`/profile/${user.login}`}
-                                            size="sm"
-                                            bg="var(--primary-color)"
-                                            color="white"
-                                            _hover={{ bg: 'var(--primary-color-hover)' }}
-                                        >
-                                            {t('common.view')}
-                                        </Button>
-                                    </Box>
-                                ))}
-                            </VStack>
-                        )}
+                        {
+                            isLoading ? (
+                                <VStack gap={4}>
+                                    <Spinner size="xl" color="var(--primary-color)" />
+                                    <Text color="black">{t('profilePage.loading.profile')}</Text>
+                                </VStack>
+                            )
+                                : (
+                                    users.length > 0 && (
+                                        <VStack align="stretch" spacing={3} mt={2}>
+                                            {users.map((user) => (
+                                                <Box
+                                                    key={user.id}
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent="space-between"
+                                                    border="1px solid var(--border-color)"
+                                                    borderRadius="md"
+                                                    p={3}
+                                                >
+                                                    <HStack spacing={3}>
+                                                        <Box
+                                                            as="img"
+                                                            src={user.avatar_url}
+                                                            alt={user.login}
+                                                            w="40px"
+                                                            h="40px"
+                                                            borderRadius="full"
+                                                        />
+                                                        <Text color="black" fontWeight="600">{user.login}</Text>
+                                                    </HStack>
+                                                    <Button
+                                                        as={RouterLink}
+                                                        to={`/profile/${user.login}`}
+                                                        size="sm"
+                                                        bg="var(--primary-color)"
+                                                        color="white"
+                                                        _hover={{ bg: 'var(--primary-color-hover)' }}
+                                                    >
+                                                        {t('common.view')}
+                                                    </Button>
+                                                </Box>
+                                            ))}
+                                        </VStack>
+                                    )
+                                )
+                        }
+
                     </VStack>
                 </Box>
             </VStack>
