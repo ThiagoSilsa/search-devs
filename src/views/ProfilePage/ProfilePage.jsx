@@ -182,6 +182,7 @@ const ProfilePage = () => {
     return (
         <Container minW="99vw" minH="100vh" bg="white" py={10}>
             <VStack maxW="1200px" mx="auto" align="stretch" gap={6}>
+
                 <Button
                     as={RouterLink}
                     to="/"
@@ -316,13 +317,12 @@ const ProfilePage = () => {
                                     onChange={(e) => setSortType(e.target.value)}
                                     w="150px"
                                     bg="white"
-                                    color={"var(--primary-color)"}
+                                    color={"var(--font-color2)"}
                                 >
                                     <NativeSelect.Field
-                                        placeholder='Sort by'
                                     >
-                                        <option value="created">Created</option>
                                         <option value="updated">Updated</option>
+                                        <option value="created">Created</option>
                                         <option value="pushed">Pushed</option>
                                         <option value="full_name">Full Name</option>
                                     </NativeSelect.Field>
@@ -333,10 +333,9 @@ const ProfilePage = () => {
                                     onChange={(e) => setSortDirection(e.target.value)}
                                     w="120px"
                                     bg="white"
-                                    color={"var(--primary-color)"}
+                                    color={"var(--font-color2)"}
                                 >
                                     <NativeSelect.Field
-                                        placeholder='Direction'
                                     >
                                         <option value="asc">ASC</option>
                                         <option value="desc">DESC</option>
