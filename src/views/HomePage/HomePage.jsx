@@ -48,7 +48,9 @@ const HomePage = () => {
                     bg="white"
                     color="var(--font-color2)"
                 >
-                    <NativeSelect.Field>
+                    <NativeSelect.Field
+                        defaultValue={i18n.language == "pt" ? "pt" : "en"}
+                    >
                         <option value="en">{t('common.english')}</option>
                         <option value="pt">{t('common.portuguese')}</option>
                     </NativeSelect.Field>
