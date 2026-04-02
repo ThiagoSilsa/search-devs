@@ -1,13 +1,17 @@
+// Chakra
 import { Box, Flex, Heading, HStack, Icon, Link, Portal, Select, Spinner, Text, VStack, createListCollection } from '@chakra-ui/react'
 
+// Icons
 import { IoEyeOutline, IoStarOutline } from 'react-icons/io5'
 import { LuDot } from 'react-icons/lu'
 import { FiMoreHorizontal } from 'react-icons/fi'
 
+// Utils
 import getDayQuantityText from '../../../utils/getComparedDate'
 
-
+// Config
 import { sortTypeCollection, sortDirectionCollection } from '../config/SelectConfig'
+
 const RepositoriesSection = ({
     repositories,
     loadingRepos,
