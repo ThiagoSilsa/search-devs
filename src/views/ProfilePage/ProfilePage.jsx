@@ -39,7 +39,8 @@ const ProfilePage = () => {
 
     const [user, setUser] = useState(null)
     const [repositories, setRepositories] = useState([])
-    const [loading, setLoading] = useState(true)
+    const [loadingUser, setLoadingUser] = useState(true)
+    const [loadingRepos, setLoadingRepos] = useState(true)
     const [errorMessage, setErrorMessage] = useState('')
     const [isUserNotFound, setIsUserNotFound] = useState(false)
     const [repoMaxCount, setRepoMaxCount] = useState(10)
@@ -52,33 +53,50 @@ const ProfilePage = () => {
         const fetchInitialProfileData = async () => {
             if (!username) {
                 setErrorMessage('User not found')
-                setLoading(false)
+                setLoadingUser(false)
                 return
             }
 
             try {
-                setLoading(true)
+                setLoadingUser(true)
                 setErrorMessage('')
                 setIsUserNotFound(false)
-                setRepoMaxCount(10)
-
-                const [profileData, repositoriesData] = await Promise.all([
+                const [profileData] = await Promise.all([
                     GitHubController.getUserProfile(username),
-                    GitHubController.getUserRepositories(username, 10),
                 ])
 
                 setUser(profileData)
-                setRepositories(repositoriesData)
             } catch (error) {
                 if (error?.status === 404) {
                     setIsUserNotFound(true)
                 }
                 setErrorMessage(error.message || 'Unexpected error while loading profile')
             } finally {
-                setLoading(false)
+                setLoadingUser(false)
             }
         }
 
+        fetchInitialProfileData()
+    }, [username])
+
+    // Busca pelos repositorios do usuário
+    useEffect(() => {
+        const fetchInitialProfileData = async () => {
+            try {
+                setLoadingRepos(true)
+                setErrorMessage('')
+
+                const [repositoriesData] = await Promise.all([
+                    GitHubController.getUserRepositories(username, 10),
+                ])
+
+                setRepositories(repositoriesData)
+            } catch (error) {
+                setErrorMessage(error.message || 'Unexpected error while loading repositories')
+            } finally {
+                setLoadingRepos(false)
+            }
+        }
         fetchInitialProfileData()
     }, [username])
 
@@ -106,7 +124,7 @@ const ProfilePage = () => {
     // Infinite scroll handler
     useEffect(() => {
         const handleScrollToBottom = () => {
-            if (!user || loading || isLoadingMoreRepos || !hasMoreRepositories) {
+            if (!user || loadingUser || isLoadingMoreRepos || !hasMoreRepositories) {
                 return
             }
 
@@ -127,9 +145,9 @@ const ProfilePage = () => {
         return () => {
             window.removeEventListener('scroll', handleScrollToBottom)
         }
-    }, [hasMoreRepositories, isLoadingMoreRepos, loading, user])
+    }, [hasMoreRepositories, isLoadingMoreRepos, loadingUser, user])
 
-    if (loading) {
+    if (loadingUser && loadingRepos) {
         return (
             <Container minW="100vw" minH="100vh" display="flex" alignItems="center" justifyContent="center" bg="white">
                 <VStack gap={4}>
@@ -284,60 +302,76 @@ const ProfilePage = () => {
                     </Box>
 
                     <Box flex="1" w="full">
-                        <Heading as="h2" size="lg" color="black" mb={4}>
-                            Repositories
-                        </Heading>
+                        <HStack justify="space-between" align="center" mb={4}>
+                            <Heading as="h2" size="lg" color="black" mb={4}>
+                                Repositories
+                            </Heading>
+                            !AQUI
+                        </HStack>
+
 
                         {repositories.length === 0 && (
                             <Text color="gray.600">This user has no public repositories.</Text>
                         )}
 
                         <VStack align="stretch" gap={3}>
-                            {repositories.map((repository) => (
-                                <Box key={repository.id} border="1px solid var(--border-color)" borderRadius="md" p={4}>
-                                    <HStack justify="space-between" align="flex-start" gap={4}>
-                                        <VStack align="stretch" gap={1} flex="1">
-                                            <Link
-                                                href={repository.html_url}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                color="var(--secondary-color)"
-                                                fontWeight="700"
-                                            >
-                                                {repository.name}
-                                            </Link>
-                                            {repository.description && (
-                                                <Text color="var(--font-color2)" fontSize="sm">
-                                                    {repository.description}
-                                                </Text>
-                                            )}
-                                        </VStack>
-                                        <Text color="var(--font-color2)" fontSize="sm" whiteSpace="nowrap">
-                                            {repository.language || 'No language'}
-                                        </Text>
+                            {
+                                loadingRepos ? (
+                                    <HStack justify="center" py={6}>
+                                        <Spinner size="lg" color="var(--primary-color)" />
+                                        <Text color="var(--font-color2)">Loading repositories...</Text>
                                     </HStack>
-                                    <HStack mt={2} spacing={4}>
-                                        <HStack spacing={1}>
-                                            <IoStarOutline color={"var(--font-color2)"} size={16} />
-                                            <Text color="var(--font-color2)" fontSize="sm">
-                                                {repository.stargazers_count}
-                                            </Text>
-                                        </HStack>
-                                        <HStack spacing={1}>
-                                            <IoEyeOutline color={"var(--font-color2)"} size={16} />
-                                            <Text color="var(--font-color2)" fontSize="sm">
-                                                {repository.watchers_count}
-                                            </Text>
-                                        </HStack>
-                                        <HStack spacing={1}>
-                                            <LuDot color={"var(--font-color2)"} size={16} />
-                                            <Text color="var(--font-color2)" fontSize="sm">
-                                                {repository.updated_at ? "updated " + getDayQuantityText(repository.updated_at) : 'No update date'}
-                                            </Text>
-                                        </HStack>
-                                    </HStack>
-                                </Box>
-                            ))}
+                                )
+                                    :
+                                    (
+                                        repositories.map((repository) => (
+                                            <Box key={repository.id} border="1px solid var(--border-color)" borderRadius="md" p={4}>
+                                                <HStack justify="space-between" align="flex-start" gap={4}>
+                                                    <VStack align="stretch" gap={1} flex="1">
+                                                        <Link
+                                                            href={repository.html_url}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            color="var(--secondary-color)"
+                                                            fontWeight="700"
+                                                        >
+                                                            {repository.name}
+                                                        </Link>
+                                                        {repository.description && (
+                                                            <Text color="var(--font-color2)" fontSize="sm">
+                                                                {repository.description}
+                                                            </Text>
+                                                        )}
+                                                    </VStack>
+                                                    <Text color="var(--font-color2)" fontSize="sm" whiteSpace="nowrap">
+                                                        {repository.language || 'No language'}
+                                                    </Text>
+                                                </HStack>
+                                                <HStack mt={2} spacing={4}>
+                                                    <HStack spacing={1}>
+                                                        <IoStarOutline color={"var(--font-color2)"} size={16} />
+                                                        <Text color="var(--font-color2)" fontSize="sm">
+                                                            {repository.stargazers_count}
+                                                        </Text>
+                                                    </HStack>
+                                                    <HStack spacing={1}>
+                                                        <IoEyeOutline color={"var(--font-color2)"} size={16} />
+                                                        <Text color="var(--font-color2)" fontSize="sm">
+                                                            {repository.watchers_count}
+                                                        </Text>
+                                                    </HStack>
+                                                    <HStack spacing={1}>
+                                                        <LuDot color={"var(--font-color2)"} size={16} />
+                                                        <Text color="var(--font-color2)" fontSize="sm">
+                                                            {repository.updated_at ? "updated " + getDayQuantityText(repository.updated_at) : 'No update date'}
+                                                        </Text>
+                                                    </HStack>
+                                                </HStack>
+                                            </Box>
+                                        ))
+                                    )
+                            }
+
                         </VStack>
 
                         <VStack mt={6}>
