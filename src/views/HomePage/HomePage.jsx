@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router-dom'
 
 // Chakra UI
-import { Container, VStack, HStack, Input, Button, Box, Text, InputGroup, NativeSelect, Spinner } from '@chakra-ui/react'
+import { Container, VStack, HStack, Input, Button, Box, Text, InputGroup, NativeSelect, Spinner, Flex } from '@chakra-ui/react'
 
 // Icons
 import { FiSearch } from 'react-icons/fi'
@@ -32,6 +32,7 @@ const HomePage = () => {
             bg={"white"}
             minW={"100vw"}
             minH={"100vh"}
+            pt={{ base: 20, md: 0 }}
             display={"flex"}
             alignItems={"center"}
             justifyContent={"center"}
@@ -65,7 +66,7 @@ const HomePage = () => {
 
                 <Box w="full" maxW="600px">
                     <VStack spacing={1} align="stretch">
-                        <HStack spacing={2}>
+                        <Flex direction={{ base: 'column', md: 'row' }} gap={2}>
                             <InputGroup startElement={<FiSearch size={22} />}>
                                 <Input
                                     required={true}
@@ -92,6 +93,7 @@ const HomePage = () => {
                             <Button
                                 onClick={handleSearch}
                                 size="md"
+                                w={{ base: 'full', md: 'auto' }}
                                 bg="var(--primary-color)"
                                 color={"white"}
                                 _hover={{
@@ -102,7 +104,7 @@ const HomePage = () => {
                             >
                                 {t('common.search')}
                             </Button>
-                        </HStack>
+                        </Flex>
 
                         <Box minH="20px">
                             {errorMessage && <Text color="red.500" fontSize="sm">{errorMessage}</Text>}
@@ -122,13 +124,16 @@ const HomePage = () => {
                                                 <Box
                                                     key={user.id}
                                                     display="flex"
+                                                    flexFlow={{ base: 'column', md: 'row' }}
                                                     alignItems="center"
                                                     justifyContent="space-between"
                                                     border="1px solid var(--border-color)"
                                                     borderRadius="md"
                                                     p={3}
                                                 >
-                                                    <HStack spacing={3}>
+                                                    <HStack spacing={3}
+                                                        alignSelf={"flex-start"}
+                                                    >
                                                         <Box
                                                             as="img"
                                                             src={user.avatar_url}
@@ -137,9 +142,12 @@ const HomePage = () => {
                                                             h="40px"
                                                             borderRadius="full"
                                                         />
-                                                        <Text color="black" fontWeight="600">{user.login}</Text>
+                                                        <Text color="black" fontWeight="600"
+
+                                                        >{user.login}</Text>
                                                     </HStack>
                                                     <Button
+                                                        alignSelf={"flex-end"}
                                                         as={RouterLink}
                                                         to={`/profile/${user.login}`}
                                                         size="sm"

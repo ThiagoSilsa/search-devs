@@ -311,7 +311,7 @@ const ProfilePage = () => {
                     </Box>
 
                     <Box flex="1" w="full">
-                        <HStack justify="space-between" align="center" mb={4}>
+                        <Flex direction={{ base: 'column', md: 'row' }} gap={2} justify={"space-between"}>
                             <Heading as="h2" size="lg" color="black" mb={4}>
                                 {t('profilePage.title')}
                             </Heading>
@@ -347,7 +347,7 @@ const ProfilePage = () => {
                                     <NativeSelect.Indicator />
                                 </NativeSelect.Root>
                             </HStack>
-                        </HStack>
+                        </Flex>
 
 
                         {repositories.length === 0 && (
