@@ -1,41 +1,54 @@
+import api from './BaseController'
+
 class GitHubController {
-    createApiError(response) {
-        const error = new Error(`GitHub API error: ${response.status} ${response.statusText}`)
-        error.status = response.status
+    createApiError(errorResponse) {
+        const status = errorResponse?.status || 500
+        const statusText = errorResponse?.statusText || 'Unexpected error'
+        const apiMessage = errorResponse?.data?.message
+
+        const error = new Error(apiMessage || `GitHub API error: ${status} ${statusText}`)
+        error.status = status
         return error
     }
 
     async getUsers(username) {
-        // GitHub API endpoint for searching users limited to 10 results
-        const response = await fetch(`https://api.github.com/search/users?q=${encodeURIComponent(username)}&per_page=10`)
+        try {
+            const response = await api.get('/search/users', {
+                params: {
+                    q: username,
+                    per_page: 10,
+                },
+            })
 
-        if (!response.ok) {
-            throw this.createApiError(response)
+            return response.data?.items || []
+        } catch (error) {
+            throw this.createApiError(error.response)
         }
-        const data = await response.json()
-        return data.items || []
     }
 
     async getUserProfile(username) {
-        const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`)
-
-        if (!response.ok) {
-            throw this.createApiError(response)
+        try {
+            const response = await api.get(`/users/${encodeURIComponent(username)}`)
+            return response.data
+        } catch (error) {
+            throw this.createApiError(error.response)
         }
-
-        return response.json()
     }
 
-    async getUserRepositories(username, repoMaxCount = 10) {
-        const response = await fetch(
-            `https://api.github.com/users/${encodeURIComponent(username)}/repos?sort=updated&per_page=${repoMaxCount}`
-        )
+    async getUserRepositories(username, repoMaxCount = 10, sort = 'updated', direction = 'desc') {
+        try {
+            const response = await api.get(`/users/${encodeURIComponent(username)}/repos`, {
+                params: {
+                    sort,
+                    direction,
+                    per_page: repoMaxCount,
+                },
+            })
 
-        if (!response.ok) {
-            throw this.createApiError(response)
+            return response.data
+        } catch (error) {
+            throw this.createApiError(error.response)
         }
-
-        return response.json()
     }
 }
 
