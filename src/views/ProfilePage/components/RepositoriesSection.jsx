@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, Icon, Link, NativeSelect, Spinner, Text, VStack } from '@chakra-ui/react'
+import { Box, Flex, Heading, HStack, Icon, Link, Portal, Select, Spinner, Text, VStack, createListCollection } from '@chakra-ui/react'
 
 import { IoEyeOutline, IoStarOutline } from 'react-icons/io5'
 import { LuDot } from 'react-icons/lu'
@@ -6,6 +6,8 @@ import { FiMoreHorizontal } from 'react-icons/fi'
 
 import getDayQuantityText from '../../../utils/getComparedDate'
 
+
+import { sortTypeCollection, sortDirectionCollection } from '../config/SelectConfig'
 const RepositoriesSection = ({
     repositories,
     loadingRepos,
@@ -16,6 +18,7 @@ const RepositoriesSection = ({
     setSortDirection,
     t,
 }) => {
+
     return (
         <Box flex="1" w="full">
             <Flex direction={{ base: 'column', md: 'row' }} gap={2} justify={'space-between'}>
@@ -23,34 +26,60 @@ const RepositoriesSection = ({
                     {t('profilePage.title')}
                 </Heading>
                 <HStack spacing={3}>
-                    <NativeSelect.Root
-                        value={sortType}
-                        onChange={(e) => setSortType(e.target.value)}
+                    <Select.Root
+                        collection={sortTypeCollection}
+                        value={[sortType]}
+                        onValueChange={({ value }) => setSortType(value[0] || 'updated')}
                         w="150px"
-                        bg="white"
-                        color={'var(--font-color2)'}
                     >
-                        <NativeSelect.Field>
-                            <option value="updated">{t('profilePage.sort.updated')}</option>
-                            <option value="created">{t('profilePage.sort.created')}</option>
-                            <option value="pushed">{t('profilePage.sort.pushed')}</option>
-                            <option value="full_name">{t('profilePage.sort.fullName')}</option>
-                        </NativeSelect.Field>
-                        <NativeSelect.Indicator />
-                    </NativeSelect.Root>
-                    <NativeSelect.Root
-                        value={sortDirection}
-                        onChange={(e) => setSortDirection(e.target.value)}
+                        <Select.HiddenSelect />
+                        <Select.Control>
+                            <Select.Trigger bg="white" color="var(--font-color2)" border="1px solid var(--border-color)">
+                                <Select.ValueText placeholder={t('profilePage.sort.updated')} />
+                            </Select.Trigger>
+                            <Select.IndicatorGroup>
+                                <Select.Indicator color="var(--font-color2)" />
+                            </Select.IndicatorGroup>
+                        </Select.Control>
+                        <Portal>
+                            <Select.Positioner>
+                                <Select.Content bg="white" color="black" border="1px solid var(--border-color)">
+                                    {sortTypeCollection.items.map((item) => (
+                                        <Select.Item key={item.value} item={item} color="black" _highlighted={{ bg: '#f5f5f5' }}>
+                                            <Select.ItemText>{item.label}</Select.ItemText>
+                                        </Select.Item>
+                                    ))}
+                                </Select.Content>
+                            </Select.Positioner>
+                        </Portal>
+                    </Select.Root>
+                    <Select.Root
+                        collection={sortDirectionCollection}
+                        value={[sortDirection]}
+                        onValueChange={({ value }) => setSortDirection(value[0] || 'asc')}
                         w="120px"
-                        bg="white"
-                        color={'var(--font-color2)'}
                     >
-                        <NativeSelect.Field>
-                            <option value="asc">{t('profilePage.sort.asc')}</option>
-                            <option value="desc">{t('profilePage.sort.desc')}</option>
-                        </NativeSelect.Field>
-                        <NativeSelect.Indicator />
-                    </NativeSelect.Root>
+                        <Select.HiddenSelect />
+                        <Select.Control>
+                            <Select.Trigger bg="white" color="var(--font-color2)" border="1px solid var(--border-color)">
+                                <Select.ValueText placeholder={t('profilePage.sort.asc')} />
+                            </Select.Trigger>
+                            <Select.IndicatorGroup>
+                                <Select.Indicator color="var(--font-color2)" />
+                            </Select.IndicatorGroup>
+                        </Select.Control>
+                        <Portal>
+                            <Select.Positioner>
+                                <Select.Content bg="white" color="black" border="1px solid var(--border-color)">
+                                    {sortDirectionCollection.items.map((item) => (
+                                        <Select.Item key={item.value} item={item} color="black" _highlighted={{ bg: '#f5f5f5' }}>
+                                            <Select.ItemText>{item.label}</Select.ItemText>
+                                        </Select.Item>
+                                    ))}
+                                </Select.Content>
+                            </Select.Positioner>
+                        </Portal>
+                    </Select.Root>
                 </HStack>
             </Flex>
 
