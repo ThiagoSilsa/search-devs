@@ -1,4 +1,4 @@
-:root{
+:root {
     --bg-color: #ffff;
     --font-color1: #171923;
     --font-color2: #4A5568;
@@ -10,4 +10,18 @@
     --secondary-color-hover: #0056A3;
 
     --border-color: #E2E8F0;
+}
+
+html {
+    scrollbar-gutter: stable;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+}
+
+#root {
+    min-height: 100vh;
+    overflow-x: hidden;
 }

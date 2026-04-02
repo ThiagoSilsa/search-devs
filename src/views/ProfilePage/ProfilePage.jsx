@@ -47,7 +47,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <Container minW="99vw" minH="100vh" bg="white" py={10}>
+        <Container minW="100vw" minH="100vh" bg="white" py={10}>
             <VStack maxW="1200px" mx="auto" align="stretch" gap={6}>
                 <Button
                     as={RouterLink}
