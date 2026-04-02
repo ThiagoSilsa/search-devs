@@ -71,7 +71,6 @@ Access the deployed application on Vercel:
 
 
 ## URL Search
-(Only working local)
 ![GitHub Profile Search](/public/gifs/URLSearch.gif)
 
 ### Repository Listing
