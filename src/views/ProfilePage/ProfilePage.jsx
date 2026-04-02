@@ -21,11 +21,17 @@ import {
 // Controller
 import GitHubController from '../../controller/GitHubController'
 
+// Lib
+import getDayQuantityText from '../../utils/getComparedDate'
+
 // Icons
 import { HiOutlineUserGroup } from 'react-icons/hi'
 import { CiHeart, CiMail } from 'react-icons/ci'
-import { IoLocationOutline } from 'react-icons/io5'
+import { IoEyeOutline, IoLocationOutline, IoStarOutline } from 'react-icons/io5'
 import { FiLink, FiMoreHorizontal } from 'react-icons/fi'
+import { LuDot } from 'react-icons/lu'
+import { BsBuilding } from 'react-icons/bs'
+
 
 const ProfilePage = () => {
     // Capture username from param
@@ -190,7 +196,7 @@ const ProfilePage = () => {
                             </HStack>
                             {user.bio && <Text color="var(--font-color2)">{user.bio}</Text>}
 
-                            <VStack align="flex-start" gap={0}>
+                            <VStack align="flex-start" gap={1}>
                                 <HStack justify="space-between">
                                     <HiOutlineUserGroup color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)">
@@ -200,6 +206,15 @@ const ProfilePage = () => {
                                     <CiHeart color={"var(--font-color2)"} size={20} />
                                     <Text color="var(--font-color2)">
                                         {user?.following || '0'} Following</Text>
+                                </HStack>
+
+                            </VStack>
+                            <VStack align="flex-start" gap={2} marginTop={4}>
+                                <HStack justify="space-between">
+                                    <BsBuilding color={"var(--font-color2)"} size={20} />
+                                    <Text color="var(--font-color2)">
+                                        {user?.company || 'No public company'}
+                                    </Text>
                                 </HStack>
                                 <HStack justify="space-between">
                                     <IoLocationOutline color={"var(--font-color2)"} size={20} />
@@ -300,6 +315,26 @@ const ProfilePage = () => {
                                         <Text color="var(--font-color2)" fontSize="sm" whiteSpace="nowrap">
                                             {repository.language || 'No language'}
                                         </Text>
+                                    </HStack>
+                                    <HStack mt={2} spacing={4}>
+                                        <HStack spacing={1}>
+                                            <IoStarOutline color={"var(--font-color2)"} size={16} />
+                                            <Text color="var(--font-color2)" fontSize="sm">
+                                                {repository.stargazers_count}
+                                            </Text>
+                                        </HStack>
+                                        <HStack spacing={1}>
+                                            <IoEyeOutline color={"var(--font-color2)"} size={16} />
+                                            <Text color="var(--font-color2)" fontSize="sm">
+                                                {repository.watchers_count}
+                                            </Text>
+                                        </HStack>
+                                        <HStack spacing={1}>
+                                            <LuDot color={"var(--font-color2)"} size={16} />
+                                            <Text color="var(--font-color2)" fontSize="sm">
+                                                {repository.updated_at ? "updated " + getDayQuantityText(repository.updated_at) : 'No update date'}
+                                            </Text>
+                                        </HStack>
                                     </HStack>
                                 </Box>
                             ))}
