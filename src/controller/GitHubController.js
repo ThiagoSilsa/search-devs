@@ -1,7 +1,10 @@
 import api from './BaseController'
 
 // Schemas
-import userProfileSchema from '../schemas/userProfileSchema'
+import userProfileSchema, {
+    repositoryListSchema,
+    userSearchResponseSchema,
+} from '../schemas/gitHubSchemas'
 
 class GitHubController {
     createApiError(errorResponse) {
@@ -23,8 +26,12 @@ class GitHubController {
                 },
             })
 
-            return response.data?.items || []
+            const parsedUsers = userSearchResponseSchema.safeParse(response.data)
+            return parsedUsers.data.items
         } catch (error) {
+            if (error instanceof Error && error.message === 'Invalid GitHub users response') {
+                throw error
+            }
             throw this.createApiError(error.response)
         }
     }
@@ -54,8 +61,13 @@ class GitHubController {
                 },
             })
 
-            return response.data
+            const parsedRepositories = repositoryListSchema.safeParse(response.data)
+
+            return parsedRepositories.data
         } catch (error) {
+            if (error instanceof Error && error.message === 'Invalid GitHub repositories response') {
+                throw error
+            }
             throw this.createApiError(error.response)
         }
     }
