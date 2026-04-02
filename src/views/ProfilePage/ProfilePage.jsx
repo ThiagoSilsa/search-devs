@@ -185,25 +185,6 @@ const ProfilePage = () => {
     return (
         <Container minW="99vw" minH="100vh" bg="white" py={10}>
             <VStack maxW="1200px" mx="auto" align="stretch" gap={6}>
-                <HStack w="full" justify="flex-end">
-                    <Text color="var(--font-color2)" fontSize="sm">
-                        {t('common.language')}
-                    </Text>
-                    <NativeSelect.Root
-                        value={i18n.language.startsWith('pt') ? 'pt' : 'en'}
-                        onChange={(e) => i18n.changeLanguage(e.target.value)}
-                        w="140px"
-                        bg="white"
-                        color="var(--font-color2)"
-                    >
-                        <NativeSelect.Field>
-                            <option value="en">{t('common.english')}</option>
-                            <option value="pt">{t('common.portuguese')}</option>
-                        </NativeSelect.Field>
-                        <NativeSelect.Indicator />
-                    </NativeSelect.Root>
-                </HStack>
-
                 <Button
                     as={RouterLink}
                     to="/"
