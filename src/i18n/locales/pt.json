@@ -7,41 +7,41 @@
         "contact": "Contato",
         "twitter": "Twitter",
         "language": "Idioma",
-        "portuguese": "Portugues",
-        "english": "Ingles"
+        "portuguese": "Português",
+        "english": "Inglês"
     },
     "homePage": {
         "searchPlaceholder": "Buscar",
         "errors": {
-            "emptySearch": "Digite um nome de usuario para buscar",
+            "emptySearch": "Digite um nome de usuário para buscar",
             "noResults": "Nenhum resultado encontrado",
-            "unexpected": "Erro inesperado ao buscar usuarios"
+            "unexpected": "Erro inesperado ao buscar usuários"
         }
     },
     "profilePage": {
-        "title": "Repositorios",
+        "title": "Repositórios",
         "errors": {
-            "userNotFound": "Usuario nao encontrado",
+            "userNotFound": "Usuário não encontrado",
             "profileLoad": "Erro inesperado ao carregar o perfil",
-            "repositoriesLoad": "Erro inesperado ao carregar os repositorios",
-            "profileFallback": "Nao foi possivel carregar o perfil do usuario",
-            "userDoesNotExist": "O usuario \"{{username}}\" nao existe no GitHub."
+            "repositoriesLoad": "Erro inesperado ao carregar os repositórios",
+            "profileFallback": "Não foi possível carregar o perfil do usuário",
+            "userDoesNotExist": "O usuário \"{{username}}\" não existe no GitHub."
         },
         "loading": {
             "profile": "Carregando perfil...",
-            "repositories": "Carregando repositorios..."
+            "repositories": "Carregando repositórios..."
         },
         "stats": {
             "followers": "{{count}} Seguidores",
             "following": "{{count}} Seguindo"
         },
         "fallback": {
-            "company": "Sem empresa publica",
-            "location": "Sem localizacao publica",
-            "website": "Sem site publico",
-            "email": "Sem email publico",
+            "company": "Sem empresa pública",
+            "location": "Sem localização pública",
+            "website": "Sem site público",
+            "email": "Sem e-mail público",
             "language": "Sem linguagem",
-            "noUpdateDate": "Sem data de atualizacao"
+            "noUpdateDate": "Sem data de atualização"
         },
         "sort": {
             "updated": "Atualizado",
@@ -52,19 +52,19 @@
             "desc": "DESC"
         },
         "states": {
-            "noRepositories": "Este usuario nao possui repositorios publicos.",
-            "noMoreRepositories": "Nao ha mais repositorios para carregar."
+            "noRepositories": "Este usuário não possui repositórios públicos.",
+            "noMoreRepositories": "Não há mais repositórios para carregar."
         },
         "updatedWithDate": "atualizado {{value}}"
     },
     "dateUtils": {
-        "invalidDate": "Data invalida",
+        "invalidDate": "Data inválida",
         "today": "hoje",
         "yesterday": "ontem",
-        "daysAgo": "ha {{count}} dias",
-        "monthAgo": "ha 1 mes",
-        "monthsAgo": "ha {{count}} meses",
-        "yearAgo": "ha 1 ano",
-        "yearsAgo": "ha {{count}} anos"
+        "daysAgo": "há {{count}} dias",
+        "monthAgo": "há 1 mês",
+        "monthsAgo": "há {{count}} meses",
+        "yearAgo": "há 1 ano",
+        "yearsAgo": "há {{count}} anos"
     }
 }
